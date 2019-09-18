@@ -63,9 +63,9 @@ open class YTSwiftyPlayer: WKWebView {
     
     static private var defaultConfiguration: WKWebViewConfiguration {
         let config = WKWebViewConfiguration()
-        config.allowsAirPlayForMediaPlayback = true
-        config.allowsInlineMediaPlayback = true
-        config.allowsPictureInPictureMediaPlayback = true
+        config.allowsAirPlayForMediaPlayback = false
+        config.allowsInlineMediaPlayback = false
+        config.allowsPictureInPictureMediaPlayback = false
         return config
     }
     
@@ -89,7 +89,13 @@ open class YTSwiftyPlayer: WKWebView {
         let config = YTSwiftyPlayer.defaultConfiguration
         let userContentController = WKUserContentController()
         config.userContentController = userContentController
-
+        playerVars.forEach {
+            switch $0 {
+            case .playsInline(let playsInline):
+                config.allowsInlineMediaPlayback = playsInline
+            default: break
+            }
+        }
         super.init(frame: frame, configuration: config)
 
         callbackHandlers.forEach {
